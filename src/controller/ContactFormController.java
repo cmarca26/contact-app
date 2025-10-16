@@ -104,6 +104,7 @@ public class ContactFormController implements ActionListener {
             message = "Contacto agregado correctamente";
         } else {
             // Actualizar contacto existente
+            c.setId(idContact);
             contactModel.updateContact(c);
             message = "Contacto actualizado correctamente";
         }

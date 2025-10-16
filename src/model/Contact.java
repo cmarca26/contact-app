@@ -102,7 +102,7 @@ public class Contact {
 
     @Override
     public String toString() {
-        return "Contact{" + "id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", phone=" + phone + ", email=" + email + ", date=" + date + ", category=" + category + ", favorite=" + favorite + '}';
+        return "Detalles del registro: [ Nombre: " + firstName + ", Apellido: " + lastName + ", Teléfono: " + phone + ", Email: " + email + ", Categoría: " + category + ", ¿Es favorito?" + (favorite ? "Sí" : "No") + ", Fecha de registro: " + date + "]";
     }
 
 }

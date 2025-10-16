@@ -2,17 +2,27 @@ package view;
 
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 public class ContactView extends javax.swing.JFrame {
 
     public ContactView() {
         initComponents();
         setLocationRelativeTo(null);
-        jPanelMain.setLayout(new BorderLayout());
+        jPanelContacts.setLayout(new BorderLayout());
+        jPanelStats.setLayout(new BorderLayout());
     }
 
-    public JPanel getjPanelMain() {
-        return jPanelMain;
+    public JPanel getjPanelContacts() {
+        return jPanelContacts;
+    }
+
+    public JPanel getjPanelStats() {
+        return jPanelStats;
+    }
+
+    public JTabbedPane getjTabbedPaneMain() {
+        return jTabbedPaneMain;
     }
 
     @SuppressWarnings("unchecked")
@@ -22,11 +32,13 @@ public class ContactView extends javax.swing.JFrame {
         jPanelTitle = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jPanelMain = new javax.swing.JPanel();
+        jTabbedPaneMain = new javax.swing.JTabbedPane();
+        jPanelStats = new javax.swing.JPanel();
+        jPanelContacts = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("AgendaFugaz");
-        setPreferredSize(new java.awt.Dimension(840, 680));
+        setPreferredSize(new java.awt.Dimension(840, 720));
         setResizable(false);
 
         jPanelTitle.setPreferredSize(new java.awt.Dimension(800, 100));
@@ -41,37 +53,58 @@ public class ContactView extends javax.swing.JFrame {
         jPanelTitle.setLayout(jPanelTitleLayout);
         jPanelTitleLayout.setHorizontalGroup(
             jPanelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelTitleLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(309, 309, 309))
             .addGroup(jPanelTitleLayout.createSequentialGroup()
-                .addGap(273, 273, 273)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(272, Short.MAX_VALUE))
+                .addGroup(jPanelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelTitleLayout.createSequentialGroup()
+                        .addGap(273, 273, 273)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanelTitleLayout.createSequentialGroup()
+                        .addGap(313, 313, 313)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanelTitleLayout.setVerticalGroup(
             jPanelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelTitleLayout.createSequentialGroup()
-                .addGap(14, 14, 14)
+                .addGap(8, 8, 8)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
                 .addContainerGap(18, Short.MAX_VALUE))
         );
 
-        jPanelMain.setPreferredSize(new java.awt.Dimension(800, 500));
+        jTabbedPaneMain.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jTabbedPaneMain.setPreferredSize(new java.awt.Dimension(800, 500));
 
-        javax.swing.GroupLayout jPanelMainLayout = new javax.swing.GroupLayout(jPanelMain);
-        jPanelMain.setLayout(jPanelMainLayout);
-        jPanelMainLayout.setHorizontalGroup(
-            jPanelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        jPanelStats.setPreferredSize(new java.awt.Dimension(800, 500));
+
+        javax.swing.GroupLayout jPanelStatsLayout = new javax.swing.GroupLayout(jPanelStats);
+        jPanelStats.setLayout(jPanelStatsLayout);
+        jPanelStatsLayout.setHorizontalGroup(
+            jPanelStatsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 800, Short.MAX_VALUE)
         );
-        jPanelMainLayout.setVerticalGroup(
-            jPanelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 500, Short.MAX_VALUE)
+        jPanelStatsLayout.setVerticalGroup(
+            jPanelStatsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 571, Short.MAX_VALUE)
         );
+
+        jTabbedPaneMain.addTab("Estadísticas", jPanelStats);
+
+        jPanelContacts.setPreferredSize(new java.awt.Dimension(800, 500));
+
+        javax.swing.GroupLayout jPanelContactsLayout = new javax.swing.GroupLayout(jPanelContacts);
+        jPanelContacts.setLayout(jPanelContactsLayout);
+        jPanelContactsLayout.setHorizontalGroup(
+            jPanelContactsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 800, Short.MAX_VALUE)
+        );
+        jPanelContactsLayout.setVerticalGroup(
+            jPanelContactsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 571, Short.MAX_VALUE)
+        );
+
+        jTabbedPaneMain.addTab("Contactos", jPanelContacts);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -79,19 +112,17 @@ public class ContactView extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanelTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanelMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addComponent(jPanelTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 828, Short.MAX_VALUE)
+                .addContainerGap())
+            .addComponent(jTabbedPaneMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanelTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanelMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTabbedPaneMain, javax.swing.GroupLayout.DEFAULT_SIZE, 609, Short.MAX_VALUE))
         );
 
         getAccessibleContext().setAccessibleName("Agenda Fugaz");
@@ -103,7 +134,9 @@ public class ContactView extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JPanel jPanelMain;
+    private javax.swing.JPanel jPanelContacts;
+    private javax.swing.JPanel jPanelStats;
     private javax.swing.JPanel jPanelTitle;
+    private javax.swing.JTabbedPane jTabbedPaneMain;
     // End of variables declaration//GEN-END:variables
 }
