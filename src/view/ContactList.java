@@ -101,6 +101,7 @@ public class ContactList extends javax.swing.JPanel {
 
         jScrollPane.setPreferredSize(new java.awt.Dimension(800, 400));
 
+        jTableList.setAutoCreateRowSorter(true);
         jTableList.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null},
