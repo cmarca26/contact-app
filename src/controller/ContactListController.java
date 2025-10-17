@@ -2,13 +2,14 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.util.stream.Collectors;
 import javax.swing.JFileChooser;
 import javax.swing.SwingWorker;
@@ -17,7 +18,7 @@ import model.ContactModel;
 import utils.TableUtils;
 import utils.UIUtils;
 
-public class ContactListController implements ActionListener {
+public class ContactListController implements ActionListener, KeyListener, MouseListener {
 
     private ContactList contactList;
     private ContactViewController contactViewController;
@@ -58,22 +59,16 @@ public class ContactListController implements ActionListener {
         this.contactList.getjButtonExport().addActionListener(this);
 
         // Listener para habilitar/deshabilitar botones según selección en la tabla
-        contactList.getjTableList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                boolean selected = contactList.getjTableList().getSelectedRow() != -1;
-                UIUtils.setButtonVisible(contactList.getjButtonEdit(), selected);
-                UIUtils.setButtonVisible(contactList.getjButtonDelete(), selected);
-            }
+        contactList.getjTableList().getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+            boolean selected = contactList.getjTableList().getSelectedRow() != -1;
+            UIUtils.setButtonVisible(contactList.getjButtonEdit(), selected);
+            UIUtils.setButtonVisible(contactList.getjButtonDelete(), selected);
         });
 
-        // Listener para el campo de búsqueda con retraso
-        contactList.getjTextFieldSearch().addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                searchTimer.restart();
-            }
-        });
+        contactList.getjTextFieldSearch().addKeyListener(this);
+
+        // Agregar listener de mouse al panel de la tabla para detectar los clics
+        contactList.getjTableList().addMouseListener(this);
     }
 
     /**
@@ -93,6 +88,86 @@ public class ContactListController implements ActionListener {
         } else if (e.getSource() == contactList.getjButtonExport()) {
             exportData();
         }
+    }
+
+    /**
+     * Método para manejar el eventos de tipado de teclas.
+     *
+     * @param e Evento de teclado No se utiliza en esta implementación.
+     */
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    /**
+     * Método para manejar el eventos de presión de teclas.
+     *
+     * @param e Evento de teclado No se utiliza en esta implementación.
+     */
+    @Override
+    public void keyPressed(KeyEvent e) {
+    }
+
+    /**
+     * Método para manejar el eventos de liberación de teclas.
+     *
+     * @param e Evento de teclado
+     */
+    @Override
+    public void keyReleased(KeyEvent e) {
+        if (e.getSource() == contactList.getjTextFieldSearch()) {
+            // Reiniciar el temporizador de búsqueda al soltar una tecla
+            searchTimer.restart();
+        }
+    }
+
+    /**
+     * Método para manejar eventos de clic del mouse.
+     *
+     * @param e Evento de mouse No se utiliza en esta implementación.
+     */
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    }
+
+    /**
+     * Método para manejar eventos de presión del mouse.
+     *
+     * @param e Evento de mouse No se utiliza en esta implementación.
+     */
+    @Override
+    public void mousePressed(MouseEvent e) {
+    }
+
+    /**
+     * Método para manejar eventos de liberación del mouse.
+     *
+     * @param e Evento de mouse Si se detecta un clic derecho, limpia los campos
+     * del formulario.
+     */
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+            delete();
+        }
+    }
+
+    /**
+     * Método para manejar eventos de entrada del mouse.
+     *
+     * @param e Evento de mouse No se utiliza en esta implementación.
+     */
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    /**
+     * Método para manejar eventos de salida del mouse.
+     *
+     * @param e Evento de mouse No se utiliza en esta implementación.
+     */
+    @Override
+    public void mouseExited(MouseEvent e) {
     }
 
     /**

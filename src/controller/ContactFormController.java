@@ -2,14 +2,23 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
+import javax.swing.JRootPane;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import model.ContactModel;
 import model.Contact;
 import utils.UIUtils;
 import view.ContactForm;
 
-public class ContactFormController implements ActionListener {
+public class ContactFormController implements ActionListener, MouseListener {
 
     private ContactForm contactForm;
     private ContactViewController contactViewController;
@@ -40,6 +49,96 @@ public class ContactFormController implements ActionListener {
         if (idContact != null) {
             fillData(idContact);
         }
+
+        // Inicializar atajos de teclado y de mouse
+        SwingUtilities.invokeLater(this::initKeyBindings);
+    }
+
+    /**
+     * Inicializa los atajos de teclado globales del formulario. ENTER = Guardar
+     * ESC = Volver atrás DELETE = Limpiar campos
+     */
+    private void initKeyBindings() {
+        // Obtener el panel principal del formulario
+        JRootPane rootPane = contactForm.getRootPane();
+
+        // Configurar input y action map para los atajos de teclado
+        InputMap inputMap = rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionMap = rootPane.getActionMap();
+
+        // Vincular la tecla ENTER con nombrar acción "saveData"
+        inputMap.put(KeyStroke.getKeyStroke("ENTER"), "saveData");
+        // Definir la acción "saveData" para guardar los datos
+        actionMap.put("saveData", new AbstractAction() {
+            // Llamar al método saveData() cuando se presione ENTER
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveData();
+            }
+        });
+
+        // Vincular la tecla ESCAPE con nombrar acción "backView"
+        inputMap.put(KeyStroke.getKeyStroke("ESCAPE"), "backView");
+        // Definir la acción "backView" para volver a la vista anterior
+        actionMap.put("backView", new AbstractAction() {
+            // Llamar al método backView() cuando se presione ESCAPE
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                backView();
+            }
+        });
+
+        // Agregar listener de mouse al panel de campos para detectar los clics
+        contactForm.getjPanelFields().addMouseListener(this);
+    }
+
+    /**
+     * Método para manejar eventos de clic del mouse.
+     *
+     * @param e Evento de mouse No se utiliza en esta implementación.
+     */
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    }
+
+    /**
+     * Método para manejar eventos de presión del mouse.
+     *
+     * @param e Evento de mouse No se utiliza en esta implementación.
+     */
+    @Override
+    public void mousePressed(MouseEvent e) {
+    }
+
+    /**
+     * Método para manejar eventos de liberación del mouse.
+     *
+     * @param e Evento de mouse Si se detecta un clic derecho, limpia los campos
+     * del formulario.
+     */
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+            cleanFields();
+        }
+    }
+
+    /**
+     * Método para manejar eventos de entrada del mouse.
+     *
+     * @param e Evento de mouse No se utiliza en esta implementación.
+     */
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    /**
+     * Método para manejar eventos de salida del mouse.
+     *
+     * @param e Evento de mouse No se utiliza en esta implementación.
+     */
+    @Override
+    public void mouseExited(MouseEvent e) {
     }
 
     /**
