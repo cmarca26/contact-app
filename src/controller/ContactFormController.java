@@ -18,7 +18,7 @@ public class ContactFormController implements ActionListener {
 
     /**
      * Constructor para el formulario de contacto.
-     * 
+     *
      * @param contactForm Formulario de contacto
      * @param contactViewController Constructor de la vista de contactos
      * @param contactModel Modelo de datos de contactos
@@ -57,7 +57,8 @@ public class ContactFormController implements ActionListener {
     }
 
     /**
-     * Regresa a la vista de lista de contactos y limpia los campos del formulario.
+     * Regresa a la vista de lista de contactos y limpia los campos del
+     * formulario.
      */
     private void backView() {
         cleanFields();

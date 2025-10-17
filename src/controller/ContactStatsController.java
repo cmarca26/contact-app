@@ -1,7 +1,5 @@
 package controller;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import model.Contact;
@@ -26,7 +24,7 @@ public class ContactStatsController {
      */
     public void fillStats() {
         List<Contact> contacts = contactModel.getAllContacts();
-        
+
         int total = contacts.size();
         Contact lastContact = total > 0 ? contacts.get(total - 1) : null;
 
