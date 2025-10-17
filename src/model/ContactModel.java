@@ -1,5 +1,12 @@
 package model;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ContactModel {
@@ -93,5 +100,41 @@ public class ContactModel {
 
         // Guardar cambios en el repositorio
         contactRepository.saveContacts(contactList);
+    }
+
+    /**
+     * Importa contactos desde un archivo CSV.
+     *
+     * @param file Archivo CSV a importar.
+     * @throws RuntimeException si ocurre un error de lectura o formato.
+     */
+    public void importFromCsv(File file) {
+        try {
+            // Importar contactos desde el archivo CSV
+            List<Contact> importedContacts = contactRepository.importContacts(file);
+            // Agregar los contactos importados a la lista actual
+            contactList.addAll(importedContacts);
+            // Guardar cambios en el repositorio
+            contactRepository.saveContacts(contactList);
+        } catch (IOException ex) {
+            // Lanzar excepción en caso de error
+            throw new RuntimeException("Error al importar contactos: " + ex.getMessage(), ex);
+        }
+    }
+
+    /**
+     * Exporta los contactos actuales a un archivo CSV.
+     *
+     * @param file Archivo destino.
+     * @throws RuntimeException si ocurre un error de escritura.
+     */
+    public void exportToCsv(File file) {
+        try {
+            // Exportar contactos al archivo CSV
+            contactRepository.exportContacts(file, contactList);
+        } catch (IOException ex) {
+            // Lanzar excepción en caso de error
+            throw new RuntimeException("Error al exportar contactos: " + ex.getMessage(), ex);
+        }
     }
 }

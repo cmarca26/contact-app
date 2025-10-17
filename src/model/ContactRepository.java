@@ -105,4 +105,86 @@ public class ContactRepository {
         }
         return s.replace("\\" + SEPARATOR, SEPARATOR);
     }
+
+    /**
+     * Importa contactos desde un archivo CSV.
+     *
+     * @param file Archivo a importar
+     * @return Lista de contactos importados
+     * @throws IOException si ocurre un error de lectura
+     */
+    public List<Contact> importContacts(File file) throws IOException {
+
+        // Crear lista para almacenar contactos importados
+        List<Contact> contacts = new ArrayList<>();
+
+        // Leer archivo CSV
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            boolean firstLine = true;
+
+            // Leer cada línea del archivo
+            while ((line = br.readLine()) != null) {
+                // Omitir la primera línea 
+                if (firstLine) {
+                    firstLine = false;
+                    continue;
+                }
+
+                // Dividir la línea en campos
+                String[] data = line.split(SEPARATOR, -1);
+                // Validar que la línea tenga el formato correcto
+                if (data.length == 6) {
+                    // Crear contacto a partir de los datos
+                    Contact contact = new Contact(
+                            data[0],
+                            data[1],
+                            data[2],
+                            data[3],
+                            data[4],
+                            Boolean.parseBoolean(data[5])
+                    );
+                    // Agregar contacto a la lista
+                    contacts.add(contact);
+                }
+            }
+        }
+
+        // Devolver la lista de contactos importados
+        return contacts;
+    }
+
+    /**
+     * Exporta contactos a un archivo CSV.
+     *
+     * @param file Archivo a exportar
+     * @param contacts Lista de contactos a exportar
+     * @throws IOException si ocurre un error de escritura
+     */
+    public void exportContacts(File file, List<Contact> contacts) throws IOException {
+
+        // Escribir archivo CSV
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+            // Escribir encabezados
+            bw.write(String.join(SEPARATOR, "Nombre", "Apellido", "Teléfono", "Email", "Fecha", "Categoría", "Favorito"));
+            // Salto de línea
+            bw.newLine();
+
+            // Escribir cada contacto
+            for (Contact c : contacts) {
+                // Formatear y escribir los datos del contacto
+                bw.write(String.join(SEPARATOR,
+                        c.getFirstName(),
+                        c.getLastName(),
+                        c.getPhone(),
+                        c.getEmail(),
+                        c.getCategory(),
+                        c.getFavorite().toString()
+                ));
+
+                // Salto de línea
+                bw.newLine();
+            }
+        }
+    }
 }

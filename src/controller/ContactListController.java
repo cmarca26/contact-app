@@ -4,11 +4,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.util.stream.Collectors;
+import javax.swing.JFileChooser;
+import javax.swing.SwingWorker;
 import view.ContactList;
 import model.ContactModel;
 import utils.TableUtils;
@@ -51,6 +54,8 @@ public class ContactListController implements ActionListener {
         this.contactList.getjButtonAdd().addActionListener(this);
         this.contactList.getjButtonEdit().addActionListener(this);
         this.contactList.getjButtonDelete().addActionListener(this);
+        this.contactList.getjButtonImport().addActionListener(this);
+        this.contactList.getjButtonExport().addActionListener(this);
 
         // Listener para habilitar/deshabilitar botones según selección en la tabla
         contactList.getjTableList().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -72,7 +77,8 @@ public class ContactListController implements ActionListener {
     }
 
     /**
-     * Maneja los eventos de los botones Agregar, Editar y Eliminar.
+     * Maneja los eventos de los botones Agregar, Editar, Eliminar, Exportar e
+     * Importar.
      */
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -82,6 +88,10 @@ public class ContactListController implements ActionListener {
             edit();
         } else if (e.getSource() == contactList.getjButtonDelete()) {
             delete();
+        } else if (e.getSource() == contactList.getjButtonImport()) {
+            importData();
+        } else if (e.getSource() == contactList.getjButtonExport()) {
+            exportData();
         }
     }
 
@@ -140,9 +150,9 @@ public class ContactListController implements ActionListener {
         // Filtrar contactos que coincidan con el texto de búsqueda
         var filtered = contactModel.getAllContacts().stream().filter(
                 c -> c.getFirstName().toLowerCase().contains(query)
-                        || c.getLastName().toLowerCase().contains(query)
-                        || c.getEmail().toLowerCase().contains(query)
-                        || c.getPhone().toLowerCase().contains(query))
+                || c.getLastName().toLowerCase().contains(query)
+                || c.getEmail().toLowerCase().contains(query)
+                || c.getPhone().toLowerCase().contains(query))
                 .collect(Collectors.toList());
 
         // Actualizar tabla con los contactos filtrados
@@ -150,4 +160,87 @@ public class ContactListController implements ActionListener {
 
     }
 
+    /**
+     * Importa datos de un archivo CSV seleccionado por el usuario.
+     */
+    private void importData() {
+        // Abrir diálogo para seleccionar archivo CSV
+        JFileChooser chooser = new JFileChooser();
+        int option = chooser.showOpenDialog(contactList);
+        if (option == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+
+            // Usar SwingWorker para no bloquear la interfaz durante la importación
+            new SwingWorker<Void, Integer>() {
+                // Progreso de la importación
+                @Override
+                protected Void doInBackground() {
+                    // Mostrar barra de progreso
+                    contactList.getjProgressBar().setVisible(true);
+                    contactList.getjProgressBar().setIndeterminate(true);
+                    // Importar contactos desde el archivo seleccionado
+                    try {
+                        contactModel.importFromCsv(file);
+                    } catch (Exception e) {
+                        UIUtils.showError("Error al importar contactos: " + e.getMessage());
+                    }
+                    return null;
+                }
+
+                // Al finalizar la importación
+                @Override
+                protected void done() {
+                    // Ocultar barra de progreso
+                    contactList.getjProgressBar().setIndeterminate(false);
+                    contactList.getjProgressBar().setVisible(false);
+                    // Actualizar tabla con los contactos importados
+                    TableUtils.fillContactsTable(contactList.getjTableList(), contactModel.getAllContacts());
+                    // Mostrar mensaje de éxito
+                    UIUtils.showInfo("Importación de registros realizada correctamente");
+                }
+            }.execute();
+        }
+    }
+
+    /**
+     * Exporta datos a un archivo CSV seleccionado por el usuario.
+     */
+    private void exportData() {
+        // Abrir diálogo para seleccionar archivo CSV
+        JFileChooser chooser = new JFileChooser();
+        int option = chooser.showSaveDialog(contactList);
+        if (option == JFileChooser.APPROVE_OPTION) {
+            // Obtener archivo seleccionado
+            File file = chooser.getSelectedFile();
+
+            // Usar SwingWorker para no bloquear la interfaz durante la exportación
+            new SwingWorker<Void, Integer>() {
+
+                // Progreso de la exportación
+                @Override
+                protected Void doInBackground() {
+                    // Mostrar barra de progreso
+                    contactList.getjProgressBar().setVisible(true);
+                    contactList.getjProgressBar().setIndeterminate(true);
+                    // Exportar contactos al archivo seleccionado
+                    try {
+                        contactModel.exportToCsv(file);
+                    } catch (Exception e) {
+                        UIUtils.showError("Error al exportar contactos: " + e.getMessage());
+                    }
+                    return null;
+                }
+
+                // Al finalizar la exportación
+                @Override
+                protected void done() {
+                    // Ocultar barra de progreso
+                    contactList.getjProgressBar().setIndeterminate(false);
+                    contactList.getjProgressBar().setVisible(false);
+                    // Mostrar mensaje de éxito
+                    UIUtils.showInfo("Exportación de registros realizada correctamente");
+                }
+            }.execute();
+        }
+    }
 }
