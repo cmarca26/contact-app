@@ -29,7 +29,7 @@ public class ContactStatsController {
         Contact lastContact = total > 0 ? contacts.get(total - 1) : null;
 
         contactStatsView.getjTextFieldTotalRecords().setText(total > 0 ? total + " registros" : "No se encontraron registros");
-        contactStatsView.getjTextAreaLastRecord().setText(lastContact.toString());
+        contactStatsView.getjTextAreaLastRecord().setText(total > 0 ? lastContact.toString() : "No se encontraron registros");
     }
 
 }

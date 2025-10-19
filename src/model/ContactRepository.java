@@ -41,7 +41,7 @@ public class ContactRepository {
                             unescape(data[3]),
                             unescape(data[4]),
                             unescape(data[6]),
-                            Boolean.parseBoolean(data[7])
+                            Boolean.valueOf(data[7])
                     );
                     contacts.add(contact);
                 }
@@ -142,7 +142,7 @@ public class ContactRepository {
                             data[2],
                             data[3],
                             data[4],
-                            Boolean.parseBoolean(data[5])
+                            Boolean.valueOf(data[5])
                     );
                     // Agregar contacto a la lista
                     contacts.add(contact);
