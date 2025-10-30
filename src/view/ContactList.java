@@ -68,14 +68,18 @@ public class ContactList extends javax.swing.JPanel {
         jButtonAdd.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jButtonAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/add.png"))); // NOI18N
         jButtonAdd.setText("Agregar");
+        jButtonAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         jButtonEdit.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jButtonEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/edit.png"))); // NOI18N
         jButtonEdit.setText("Editar");
+        jButtonEdit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         jButtonDelete.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jButtonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delete.png"))); // NOI18N
         jButtonDelete.setText("Eliminar");
+        jButtonDelete.setContentAreaFilled(false);
+        jButtonDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(25, 118, 210));
@@ -87,10 +91,12 @@ public class ContactList extends javax.swing.JPanel {
         jButtonImport.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jButtonImport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/upload.png"))); // NOI18N
         jButtonImport.setText("Importar");
+        jButtonImport.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         jButtonExport.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jButtonExport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/download.png"))); // NOI18N
         jButtonExport.setText("Exportar");
+        jButtonExport.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/search.png"))); // NOI18N
 
@@ -161,6 +167,7 @@ public class ContactList extends javax.swing.JPanel {
                 "Id", "Nombre", "Apellido", "Telefono", "Email", "Categoría", "Favorito"
             }
         ));
+        jTableList.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jTableList.setPreferredSize(new java.awt.Dimension(800, 400));
         jScrollPane.setViewportView(jTableList);
 

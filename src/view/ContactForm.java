@@ -62,6 +62,7 @@ public class ContactForm extends javax.swing.JPanel {
         jButtonBack.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jButtonBack.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/back.png"))); // NOI18N
         jButtonBack.setText("Volver Atrás");
+        jButtonBack.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(25, 118, 210));
@@ -202,10 +203,12 @@ public class ContactForm extends javax.swing.JPanel {
         jButtonSave.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jButtonSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/save.png"))); // NOI18N
         jButtonSave.setText("Guardar");
+        jButtonSave.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         jButtonClean.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jButtonClean.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/clear.png"))); // NOI18N
         jButtonClean.setText("Limpiar");
+        jButtonClean.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         javax.swing.GroupLayout jPanelButtonsLayout = new javax.swing.GroupLayout(jPanelButtons);
         jPanelButtons.setLayout(jPanelButtonsLayout);
