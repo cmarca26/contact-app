@@ -44,6 +44,7 @@ public class ContactView extends javax.swing.JFrame {
         jPanelTitle.setPreferredSize(new java.awt.Dimension(800, 100));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(25, 118, 210));
         jLabel1.setText("Agenda Fugaz");
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 22)); // NOI18N

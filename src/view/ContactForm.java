@@ -60,9 +60,11 @@ public class ContactForm extends javax.swing.JPanel {
         jPanelTitle.setPreferredSize(new java.awt.Dimension(800, 100));
 
         jButtonBack.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jButtonBack.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/back.png"))); // NOI18N
         jButtonBack.setText("Volver Atrás");
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(25, 118, 210));
         jLabel7.setText("Mantenimiento de contactos");
 
         javax.swing.GroupLayout jPanelTitleLayout = new javax.swing.GroupLayout(jPanelTitle);
@@ -198,9 +200,11 @@ public class ContactForm extends javax.swing.JPanel {
         jPanelButtons.setPreferredSize(new java.awt.Dimension(800, 100));
 
         jButtonSave.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jButtonSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/save.png"))); // NOI18N
         jButtonSave.setText("Guardar");
 
         jButtonClean.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jButtonClean.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/clear.png"))); // NOI18N
         jButtonClean.setText("Limpiar");
 
         javax.swing.GroupLayout jPanelButtonsLayout = new javax.swing.GroupLayout(jPanelButtons);
@@ -208,20 +212,20 @@ public class ContactForm extends javax.swing.JPanel {
         jPanelButtonsLayout.setHorizontalGroup(
             jPanelButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelButtonsLayout.createSequentialGroup()
-                .addContainerGap(269, Short.MAX_VALUE)
-                .addComponent(jButtonClean, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(261, Short.MAX_VALUE)
+                .addComponent(jButtonClean)
                 .addGap(18, 18, 18)
-                .addComponent(jButtonSave, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(289, 289, 289))
+                .addComponent(jButtonSave)
+                .addGap(270, 270, 270))
         );
         jPanelButtonsLayout.setVerticalGroup(
             jPanelButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelButtonsLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addGroup(jPanelButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonSave, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonClean, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(39, Short.MAX_VALUE))
+                    .addComponent(jButtonSave)
+                    .addComponent(jButtonClean))
+                .addContainerGap(50, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanelFormLayout = new javax.swing.GroupLayout(jPanelForm);

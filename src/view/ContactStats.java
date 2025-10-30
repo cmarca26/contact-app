@@ -31,6 +31,7 @@ public class ContactStats extends javax.swing.JPanel {
         setPreferredSize(new java.awt.Dimension(800, 500));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(25, 118, 210));
         jLabel2.setText("Resumen");
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
