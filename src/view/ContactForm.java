@@ -55,18 +55,23 @@ public class ContactForm extends javax.swing.JPanel {
         jButtonSave = new javax.swing.JButton();
         jButtonClean = new javax.swing.JButton();
 
+        setName("Form"); // NOI18N
         setPreferredSize(new java.awt.Dimension(800, 500));
 
+        jPanelTitle.setName("jPanelTitle"); // NOI18N
         jPanelTitle.setPreferredSize(new java.awt.Dimension(800, 100));
 
         jButtonBack.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jButtonBack.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/back.png"))); // NOI18N
-        jButtonBack.setText("Volver Atrás");
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("resources/Bundle"); // NOI18N
+        jButtonBack.setText(bundle.getString("ContactForm.jButtonBack.text")); // NOI18N
         jButtonBack.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonBack.setName("jButtonBack"); // NOI18N
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(25, 118, 210));
-        jLabel7.setText("Mantenimiento de contactos");
+        jLabel7.setText(bundle.getString("ContactForm.jLabel7.text")); // NOI18N
+        jLabel7.setName("jLabel7"); // NOI18N
 
         javax.swing.GroupLayout jPanelTitleLayout = new javax.swing.GroupLayout(jPanelTitle);
         jPanelTitle.setLayout(jPanelTitleLayout);
@@ -89,28 +94,35 @@ public class ContactForm extends javax.swing.JPanel {
                 .addGap(39, 39, 39))
         );
 
+        jPanelForm.setName("jPanelForm"); // NOI18N
         jPanelForm.setPreferredSize(new java.awt.Dimension(800, 400));
 
+        jPanelFields.setName("jPanelFields"); // NOI18N
         jPanelFields.setPreferredSize(new java.awt.Dimension(800, 300));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel2.setText("Nombre:");
+        jLabel2.setText(bundle.getString("ContactForm.jLabel2.text")); // NOI18N
+        jLabel2.setName("jLabel2"); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel3.setText("Apellido:");
+        jLabel3.setText(bundle.getString("ContactForm.jLabel3.text")); // NOI18N
+        jLabel3.setName("jLabel3"); // NOI18N
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel4.setText("Email:");
+        jLabel4.setText(bundle.getString("ContactForm.jLabel4.text")); // NOI18N
+        jLabel4.setName("jLabel4"); // NOI18N
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel5.setText("Teléfono:");
+        jLabel5.setText(bundle.getString("ContactForm.jLabel5.text")); // NOI18N
+        jLabel5.setName("jLabel5"); // NOI18N
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel6.setText("Categoría:");
+        jLabel6.setText(bundle.getString("ContactForm.jLabel6.text")); // NOI18N
+        jLabel6.setName("jLabel6"); // NOI18N
 
         jCheckBoxFavorite.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jCheckBoxFavorite.setText("Agregar a favoritos");
-        jCheckBoxFavorite.setName("favorito"); // NOI18N
+        jCheckBoxFavorite.setText(bundle.getString("ContactForm.jCheckBoxFavorite.text")); // NOI18N
+        jCheckBoxFavorite.setName("jCheckBoxFavorite"); // NOI18N
 
         jComboBoxCategory.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jComboBoxCategory.setName("categoria"); // NOI18N
@@ -196,19 +208,22 @@ public class ContactForm extends javax.swing.JPanel {
                 .addGap(35, 35, 35))
         );
 
-        jComboBoxCategory.getAccessibleContext().setAccessibleName("categoria");
+        jComboBoxCategory.getAccessibleContext().setAccessibleName(bundle.getString("ContactForm.jComboBoxCategory.AccessibleContext.accessibleName")); // NOI18N
 
+        jPanelButtons.setName("jPanelButtons"); // NOI18N
         jPanelButtons.setPreferredSize(new java.awt.Dimension(800, 100));
 
         jButtonSave.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jButtonSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/save.png"))); // NOI18N
-        jButtonSave.setText("Guardar");
+        jButtonSave.setText(bundle.getString("ContactForm.jButtonSave.text")); // NOI18N
         jButtonSave.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonSave.setName("jButtonSave"); // NOI18N
 
         jButtonClean.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jButtonClean.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/clear.png"))); // NOI18N
-        jButtonClean.setText("Limpiar");
+        jButtonClean.setText(bundle.getString("ContactForm.jButtonClean.text")); // NOI18N
         jButtonClean.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonClean.setName("jButtonClean"); // NOI18N
 
         javax.swing.GroupLayout jPanelButtonsLayout = new javax.swing.GroupLayout(jPanelButtons);
         jPanelButtons.setLayout(jPanelButtonsLayout);

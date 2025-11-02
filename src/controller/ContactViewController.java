@@ -1,5 +1,8 @@
 package controller;
 
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import view.ContactForm;
 import view.ContactList;
 import view.ContactStats;
@@ -9,6 +12,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import model.ContactModel;
+import utils.I18nUtils;
 import utils.UIUtils;
 
 public class ContactViewController {
@@ -17,10 +21,16 @@ public class ContactViewController {
     private ContactModel contactModel;
     private ContactStatsController contactStatsController;
 
+    private ContactList contactList;
+    private ContactListController contactListController;
+
+    private ContactForm contactForm;
+    private ContactFormController contactFormController;
+
     /**
      * Constructor para la vista principal de contactos.
      *
-     * @param contactView Vista principal de contactos
+     * @param contactView  Vista principal de contactos
      * @param contactModel Modelo de datos de contactos
      */
     public ContactViewController(ContactView contactView, ContactModel contactModel) {
@@ -41,14 +51,55 @@ public class ContactViewController {
                 }
             }
         });
+
+        // Configurar el ActionListener para el JComboBox de selección de idioma
+        contactView.getjComboBoxLanguage().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Cambiar el idioma según la selección del usuario
+                int selectLanguage = (int) contactView.getjComboBoxLanguage().getSelectedIndex();
+                switch (selectLanguage) {
+                    case 1:
+                        I18nUtils.setLanguage("en_US");
+                        break;
+                    case 2:
+                        I18nUtils.setLanguage("fr_FR");
+                        break;
+                    default:
+                        I18nUtils.setLanguage("default");
+                        break;
+                }
+
+                // Relocalizar toda la vista al nuevo idioma
+                I18nUtils.localizeContainer(contactView, "ContactView");
+                if (contactView.getjPanelContacts().getComponentCount() > 0) {
+                    Component currentPanel = contactView.getjPanelContacts().getComponent(0);
+                    if (currentPanel instanceof ContactList) {
+                        I18nUtils.localizeContainer(currentPanel, "ContactList");
+                    } else if (currentPanel instanceof ContactForm) {
+                        I18nUtils.localizeContainer(currentPanel, "ContactForm");
+                    }
+
+                }
+                // Traducir panel de estadísticas si está visible
+                if (contactView.getjPanelStats().getComponentCount() > 0) {
+                    I18nUtils.localizeContainer(contactView.getjPanelStats().getComponent(0), "ContactStats");
+                }
+
+            }
+        });
     }
 
     /**
      * Muestra la lista de contactos en el panel de contactos de la vista
      */
     public void showContactList() {
-        ContactList contactList = new ContactList();
-        new ContactListController(contactList, this, contactModel);
+        // Reutilizar instancia si ya existe
+        if (contactList == null) {
+            contactList = new ContactList();
+            contactListController = new ContactListController(contactList, this, contactModel);
+        }
+
         UIUtils.showPanel(contactView.getjPanelContacts(), contactList);
     }
 
@@ -56,9 +107,21 @@ public class ContactViewController {
      * Muestra el formulario de contacto en el panel de contactos de la vista
      */
     public void showContactForm(String id) {
-        ContactForm contactForm = new ContactForm();
-        new ContactFormController(contactForm, this, contactModel, id);
+        // Reutilizar instancia si ya existe
+        if (contactForm == null) {
+            contactForm = new ContactForm();
+            contactFormController = new ContactFormController(contactForm, this, contactModel, id);
+        }
+
+        // Si se proporciona un ID, cargar datos; si no, limpiar campos
+        if (id != null) {
+            contactFormController.fillData(id);
+        } else {
+            contactFormController.cleanFields();
+        }
+
         UIUtils.showPanel(contactView.getjPanelContacts(), contactForm);
+        I18nUtils.localizeContainer(contactForm, "ContactForm");
     }
 
     /**

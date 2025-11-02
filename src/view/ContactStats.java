@@ -28,27 +28,36 @@ public class ContactStats extends javax.swing.JPanel {
         jTextAreaLastRecord = new javax.swing.JTextArea();
         jTextFieldTotalRecords = new javax.swing.JTextField();
 
+        setName("Form"); // NOI18N
         setPreferredSize(new java.awt.Dimension(800, 500));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(25, 118, 210));
-        jLabel2.setText("Resumen");
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("resources/Bundle"); // NOI18N
+        jLabel2.setText(bundle.getString("ContactStats.jLabel2.text")); // NOI18N
+        jLabel2.setName("jLabel2"); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel3.setText("Total de registros:");
+        jLabel3.setText(bundle.getString("ContactStats.jLabel3.text")); // NOI18N
+        jLabel3.setName("jLabel3"); // NOI18N
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel5.setText("Ultimo registro:");
+        jLabel5.setText(bundle.getString("ContactStats.jLabel5.text")); // NOI18N
+        jLabel5.setName("jLabel5"); // NOI18N
+
+        jScrollPane.setName("jScrollPane"); // NOI18N
 
         jTextAreaLastRecord.setEditable(false);
         jTextAreaLastRecord.setColumns(20);
         jTextAreaLastRecord.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jTextAreaLastRecord.setLineWrap(true);
         jTextAreaLastRecord.setRows(5);
+        jTextAreaLastRecord.setName("jTextAreaLastRecord"); // NOI18N
         jScrollPane.setViewportView(jTextAreaLastRecord);
 
         jTextFieldTotalRecords.setEditable(false);
         jTextFieldTotalRecords.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jTextFieldTotalRecords.setName("jTextFieldTotalRecords"); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

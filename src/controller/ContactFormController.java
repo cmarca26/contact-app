@@ -167,7 +167,7 @@ public class ContactFormController implements ActionListener, MouseListener {
     /**
      * Limpia todos los campos del formulario.
      */
-    private void cleanFields() {
+    public void cleanFields() {
         UIUtils.clearTextFields(contactForm.getjPanelFields());
     }
 
@@ -225,7 +225,7 @@ public class ContactFormController implements ActionListener, MouseListener {
      *
      * @param idContact ID del contacto a editar.
      */
-    private void fillData(String idContact) {
+    public void fillData(String idContact) {
         // Buscar contacto en el modelo
         Contact contact = contactModel.findById(idContact);
 

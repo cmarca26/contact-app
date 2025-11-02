@@ -61,44 +61,54 @@ public class ContactList extends javax.swing.JPanel {
         jTableList = new javax.swing.JTable();
         jProgressBar = new javax.swing.JProgressBar();
 
+        setName("Form"); // NOI18N
         setPreferredSize(new java.awt.Dimension(800, 500));
 
+        jPanelTitle.setName("jPanelTitle"); // NOI18N
         jPanelTitle.setPreferredSize(new java.awt.Dimension(800, 150));
 
         jButtonAdd.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jButtonAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/add.png"))); // NOI18N
-        jButtonAdd.setText("Agregar");
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("resources/Bundle"); // NOI18N
+        jButtonAdd.setText(bundle.getString("ContactList.jButtonAdd.text")); // NOI18N
         jButtonAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonAdd.setName("jButtonAdd"); // NOI18N
 
         jButtonEdit.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jButtonEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/edit.png"))); // NOI18N
-        jButtonEdit.setText("Editar");
+        jButtonEdit.setText(bundle.getString("ContactList.jButtonEdit.text")); // NOI18N
         jButtonEdit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonEdit.setName("jButtonEdit"); // NOI18N
 
         jButtonDelete.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jButtonDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delete.png"))); // NOI18N
-        jButtonDelete.setText("Eliminar");
+        jButtonDelete.setText(bundle.getString("ContactList.jButtonDelete.text")); // NOI18N
         jButtonDelete.setContentAreaFilled(false);
         jButtonDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonDelete.setName("jButtonDelete"); // NOI18N
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(25, 118, 210));
-        jLabel1.setText("Lista de contactos");
+        jLabel1.setText(bundle.getString("ContactList.jLabel1.text")); // NOI18N
+        jLabel1.setName("jLabel1"); // NOI18N
 
         jTextFieldSearch.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jTextFieldSearch.setName("nombre"); // NOI18N
 
         jButtonImport.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jButtonImport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/upload.png"))); // NOI18N
-        jButtonImport.setText("Importar");
+        jButtonImport.setText(bundle.getString("ContactList.jButtonImport.text")); // NOI18N
         jButtonImport.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonImport.setName("jButtonImport"); // NOI18N
 
         jButtonExport.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jButtonExport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/download.png"))); // NOI18N
-        jButtonExport.setText("Exportar");
+        jButtonExport.setText(bundle.getString("ContactList.jButtonExport.text")); // NOI18N
         jButtonExport.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonExport.setName("jButtonExport"); // NOI18N
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/search.png"))); // NOI18N
+        jLabel2.setName("jLabel2"); // NOI18N
 
         javax.swing.GroupLayout jPanelTitleLayout = new javax.swing.GroupLayout(jPanelTitle);
         jPanelTitle.setLayout(jPanelTitleLayout);
@@ -151,8 +161,10 @@ public class ContactList extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
+        jPanelTable.setName("jPanelTable"); // NOI18N
         jPanelTable.setPreferredSize(new java.awt.Dimension(800, 350));
 
+        jScrollPane.setName("jScrollPane"); // NOI18N
         jScrollPane.setPreferredSize(new java.awt.Dimension(800, 400));
 
         jTableList.setAutoCreateRowSorter(true);
@@ -168,9 +180,11 @@ public class ContactList extends javax.swing.JPanel {
             }
         ));
         jTableList.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jTableList.setName("jTableList"); // NOI18N
         jTableList.setPreferredSize(new java.awt.Dimension(800, 400));
         jScrollPane.setViewportView(jTableList);
 
+        jProgressBar.setName("jProgressBar"); // NOI18N
         jProgressBar.setStringPainted(true);
 
         javax.swing.GroupLayout jPanelTableLayout = new javax.swing.GroupLayout(jPanelTable);
