@@ -54,6 +54,20 @@ public class ContactFormController implements ActionListener, MouseListener {
         SwingUtilities.invokeLater(this::initKeyBindings);
     }
 
+    public String getIdContact() {
+        return idContact;
+    }
+
+    public void setIdContact(String idContact) {
+        this.idContact = idContact;
+
+        if (idContact != null) {
+            fillData(idContact);
+        } else {
+            cleanFields();
+        }
+    }
+
     /**
      * Inicializa los atajos de teclado globales del formulario. ENTER = Guardar
      * ESC = Volver atrás DELETE = Limpiar campos
@@ -167,7 +181,7 @@ public class ContactFormController implements ActionListener, MouseListener {
     /**
      * Limpia todos los campos del formulario.
      */
-    public void cleanFields() {
+    private void cleanFields() {
         UIUtils.clearTextFields(contactForm.getjPanelFields());
     }
 
@@ -195,7 +209,7 @@ public class ContactFormController implements ActionListener, MouseListener {
                 (String) formData.get("telefono"),
                 (String) formData.get("email"),
                 (String) formData.get("categoria"),
-                (Boolean) formData.get("favorito"));
+                (Boolean) formData.get("jCheckBoxFavorite"));
 
         String message = null;
         if (idContact == null) {
@@ -225,7 +239,7 @@ public class ContactFormController implements ActionListener, MouseListener {
      *
      * @param idContact ID del contacto a editar.
      */
-    public void fillData(String idContact) {
+    private void fillData(String idContact) {
         // Buscar contacto en el modelo
         Contact contact = contactModel.findById(idContact);
 
@@ -241,7 +255,7 @@ public class ContactFormController implements ActionListener, MouseListener {
         data.put("telefono", contact.getPhone());
         data.put("email", contact.getEmail());
         data.put("categoria", contact.getCategory());
-        data.put("favorito", contact.getFavorite());
+        data.put("jCheckBoxFavorite", contact.getFavorite());
 
         // Llenar campos del formulario con los datos del contacto encontrado
         UIUtils.fillFormData(contactForm.getjPanelFields(), data);

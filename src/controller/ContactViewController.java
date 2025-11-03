@@ -13,6 +13,7 @@ import javax.swing.event.ChangeListener;
 
 import model.ContactModel;
 import utils.I18nUtils;
+import utils.TableUtils;
 import utils.UIUtils;
 
 public class ContactViewController {
@@ -30,7 +31,7 @@ public class ContactViewController {
     /**
      * Constructor para la vista principal de contactos.
      *
-     * @param contactView  Vista principal de contactos
+     * @param contactView Vista principal de contactos
      * @param contactModel Modelo de datos de contactos
      */
     public ContactViewController(ContactView contactView, ContactModel contactModel) {
@@ -99,7 +100,8 @@ public class ContactViewController {
             contactList = new ContactList();
             contactListController = new ContactListController(contactList, this, contactModel);
         }
-
+        
+        TableUtils.fillContactsTable(contactList.getjTableList(), contactModel.getAllContacts());
         UIUtils.showPanel(contactView.getjPanelContacts(), contactList);
     }
 
@@ -111,13 +113,8 @@ public class ContactViewController {
         if (contactForm == null) {
             contactForm = new ContactForm();
             contactFormController = new ContactFormController(contactForm, this, contactModel, id);
-        }
-
-        // Si se proporciona un ID, cargar datos; si no, limpiar campos
-        if (id != null) {
-            contactFormController.fillData(id);
         } else {
-            contactFormController.cleanFields();
+            contactFormController.setIdContact(id);
         }
 
         UIUtils.showPanel(contactView.getjPanelContacts(), contactForm);
