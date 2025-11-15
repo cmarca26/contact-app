@@ -13,8 +13,10 @@ import javax.swing.event.ListSelectionEvent;
 import java.util.stream.Collectors;
 import javax.swing.JFileChooser;
 import javax.swing.SwingWorker;
+import java.util.List;
 import view.ContactList;
 import model.ContactModel;
+import model.Contact;
 import utils.TableUtils;
 import utils.UIUtils;
 
@@ -213,25 +215,47 @@ public class ContactListController implements ActionListener, KeyListener, Mouse
      * Filtra los datos en la tabla según el texto de búsqueda.
      */
     private void filterData() {
-        // Obtener texto de búsqueda
-        String query = contactList.getjTextFieldSearch().getText().trim().toLowerCase();
+        // Mostrar barra de progreso
+        contactList.getjProgressBar().setVisible(true);
+        contactList.getjProgressBar().setIndeterminate(true);
 
-        // Si el campo de búsqueda está vacío, mostrar todos los contactos
-        if (query.isEmpty()) {
-            TableUtils.fillContactsTable(contactList.getjTableList(), contactModel.getAllContacts());
-            return;
-        }
+        // Búsqueda en segundo plano usando SwingWorker
+        new SwingWorker<List<Contact>, Void>() {
+            @Override
+            protected List<Contact> doInBackground() {
+                // Esperar un momento para simular tiempo de procesamiento
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
-        // Filtrar contactos que coincidan con el texto de búsqueda
-        var filtered = contactModel.getAllContacts().stream().filter(
-                c -> c.getFirstName().toLowerCase().contains(query)
-                || c.getLastName().toLowerCase().contains(query)
-                || c.getEmail().toLowerCase().contains(query)
-                || c.getPhone().toLowerCase().contains(query))
-                .collect(Collectors.toList());
+                String query = contactList.getjTextFieldSearch().getText().trim().toLowerCase();
+                if (query.isEmpty()) {
+                    return contactModel.getAllContacts();
+                }
+                return contactModel.getAllContacts().stream().filter(
+                        c -> c.getFirstName().toLowerCase().contains(query)
+                        || c.getLastName().toLowerCase().contains(query)
+                        || c.getEmail().toLowerCase().contains(query)
+                        || c.getPhone().toLowerCase().contains(query))
+                        .collect(Collectors.toList());
+            }
 
-        // Actualizar tabla con los contactos filtrados
-        TableUtils.fillContactsTable(contactList.getjTableList(), filtered);
+            @Override
+            protected void done() {
+                try {
+                    List<Contact> filtered = get();
+                    TableUtils.fillContactsTable(contactList.getjTableList(), filtered);
+                } catch (Exception ex) {
+                    // Manejo de error: mostrar todos los contactos si falla la búsqueda
+                    TableUtils.fillContactsTable(contactList.getjTableList(), contactModel.getAllContacts());
+                } finally {
+                    contactList.getjProgressBar().setIndeterminate(false);
+                    contactList.getjProgressBar().setVisible(false);
+                }
+            }
+        }.execute();
 
     }
 
