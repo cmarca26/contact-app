@@ -163,27 +163,29 @@ public class ContactRepository {
      */
     public void exportContacts(File file, List<Contact> contacts) throws IOException {
 
-        // Escribir archivo CSV
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
-            // Escribir encabezados
-            bw.write(String.join(SEPARATOR, "Nombre", "Apellido", "Teléfono", "Email", "Fecha", "Categoría", "Favorito"));
-            // Salto de línea
-            bw.newLine();
-
-            // Escribir cada contacto
-            for (Contact c : contacts) {
-                // Formatear y escribir los datos del contacto
-                bw.write(String.join(SEPARATOR,
-                        c.getFirstName(),
-                        c.getLastName(),
-                        c.getPhone(),
-                        c.getEmail(),
-                        c.getCategory(),
-                        c.getFavorite().toString()
-                ));
-
+        synchronized (ContactRepository.class) {
+            // Escribir archivo CSV
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+                // Escribir encabezados
+                bw.write(String.join(SEPARATOR, "Nombre", "Apellido", "Teléfono", "Email", "Categoría", "Favorito"));
                 // Salto de línea
                 bw.newLine();
+
+                // Escribir cada contacto
+                for (Contact c : contacts) {
+                    // Formatear y escribir los datos del contacto
+                    bw.write(String.join(SEPARATOR,
+                            c.getFirstName(),
+                            c.getLastName(),
+                            c.getPhone(),
+                            c.getEmail(),
+                            c.getCategory(),
+                            c.getFavorite().toString()
+                    ));
+
+                    // Salto de línea
+                    bw.newLine();
+                }
             }
         }
     }

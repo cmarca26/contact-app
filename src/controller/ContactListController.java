@@ -270,34 +270,30 @@ public class ContactListController implements ActionListener, KeyListener, Mouse
             File file = chooser.getSelectedFile();
 
             // Usar SwingWorker para no bloquear la interfaz durante la importación
-            new SwingWorker<Void, Integer>() {
-                // Progreso de la importación
-                @Override
-                protected Void doInBackground() {
-                    // Mostrar barra de progreso
-                    contactList.getjProgressBar().setVisible(true);
-                    contactList.getjProgressBar().setIndeterminate(true);
-                    // Importar contactos desde el archivo seleccionado
-                    try {
-                        contactModel.importFromCsv(file);
-                    } catch (Exception e) {
-                        UIUtils.showError("Error al importar contactos: " + e.getMessage());
+                new SwingWorker<Void, Integer>() {
+                    @Override
+                    protected Void doInBackground() {
+                        // Mostrar barra de progreso
+                        contactList.getjProgressBar().setVisible(true);
+                        contactList.getjProgressBar().setIndeterminate(true);
+                        // Retardo artificial para visualizar la barra
+                        try {
+                            Thread.sleep(500);
+                            contactModel.importFromCsv(file);
+                        } catch (Exception e) {
+                            UIUtils.showError("Error al importar contactos: " + e.getMessage());
+                        }
+                        return null;
                     }
-                    return null;
-                }
 
-                // Al finalizar la importación
-                @Override
-                protected void done() {
-                    // Ocultar barra de progreso
-                    contactList.getjProgressBar().setIndeterminate(false);
-                    contactList.getjProgressBar().setVisible(false);
-                    // Actualizar tabla con los contactos importados
-                    TableUtils.fillContactsTable(contactList.getjTableList(), contactModel.getAllContacts());
-                    // Mostrar mensaje de éxito
-                    UIUtils.showInfo("Importación de registros realizada correctamente");
-                }
-            }.execute();
+                    @Override
+                    protected void done() {
+                        contactList.getjProgressBar().setIndeterminate(false);
+                        contactList.getjProgressBar().setVisible(false);
+                        TableUtils.fillContactsTable(contactList.getjTableList(), contactModel.getAllContacts());
+                        UIUtils.showInfo("Importación de registros realizada correctamente");
+                    }
+                }.execute();
         }
     }
 
@@ -314,15 +310,14 @@ public class ContactListController implements ActionListener, KeyListener, Mouse
 
             // Usar SwingWorker para no bloquear la interfaz durante la exportación
             new SwingWorker<Void, Integer>() {
-
-                // Progreso de la exportación
                 @Override
                 protected Void doInBackground() {
                     // Mostrar barra de progreso
                     contactList.getjProgressBar().setVisible(true);
                     contactList.getjProgressBar().setIndeterminate(true);
-                    // Exportar contactos al archivo seleccionado
+                    // Retardo artificial para visualizar la barra
                     try {
+                        Thread.sleep(500);
                         contactModel.exportToCsv(file);
                     } catch (Exception e) {
                         UIUtils.showError("Error al exportar contactos: " + e.getMessage());
@@ -330,13 +325,10 @@ public class ContactListController implements ActionListener, KeyListener, Mouse
                     return null;
                 }
 
-                // Al finalizar la exportación
                 @Override
                 protected void done() {
-                    // Ocultar barra de progreso
                     contactList.getjProgressBar().setIndeterminate(false);
                     contactList.getjProgressBar().setVisible(false);
-                    // Mostrar mensaje de éxito
                     UIUtils.showInfo("Exportación de registros realizada correctamente");
                 }
             }.execute();
