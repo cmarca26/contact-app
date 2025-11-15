@@ -14,11 +14,13 @@ import java.util.stream.Collectors;
 import javax.swing.JFileChooser;
 import javax.swing.SwingWorker;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import view.ContactList;
 import model.ContactModel;
 import model.Contact;
 import utils.TableUtils;
 import utils.UIUtils;
+import utils.ImportResult;
 
 public class ContactListController implements ActionListener, KeyListener, MouseListener {
 
@@ -270,30 +272,50 @@ public class ContactListController implements ActionListener, KeyListener, Mouse
             File file = chooser.getSelectedFile();
 
             // Usar SwingWorker para no bloquear la interfaz durante la importación
-                new SwingWorker<Void, Integer>() {
-                    @Override
-                    protected Void doInBackground() {
-                        // Mostrar barra de progreso
-                        contactList.getjProgressBar().setVisible(true);
-                        contactList.getjProgressBar().setIndeterminate(true);
-                        // Retardo artificial para visualizar la barra
-                        try {
-                            Thread.sleep(500);
-                            contactModel.importFromCsv(file);
-                        } catch (Exception e) {
-                            UIUtils.showError("Error al importar contactos: " + e.getMessage());
-                        }
-                        return null;
+            new SwingWorker<ImportResult, Integer>() {
+                @Override
+                protected ImportResult doInBackground() {
+                    // Mostrar barra de progreso
+                    contactList.getjProgressBar().setVisible(true);
+                    contactList.getjProgressBar().setIndeterminate(true);
+                    // Retardo artificial para visualizar la barra
+                    try {
+                        Thread.sleep(500);
+                        return contactModel.importFromCsv(file);
+                    } catch (RuntimeException e) {
+                        throw e;
+                    } catch (Exception e) {
+                        throw new RuntimeException("Error inesperado durante la importación", e);
                     }
+                }
 
-                    @Override
-                    protected void done() {
-                        contactList.getjProgressBar().setIndeterminate(false);
-                        contactList.getjProgressBar().setVisible(false);
+                @Override
+                protected void done() {
+                    contactList.getjProgressBar().setIndeterminate(false);
+                    contactList.getjProgressBar().setVisible(false);
+
+                    // Mostrar resultados de la importación
+                    try {
+                        // Obtener resultado de la importación
+                        ImportResult result = get();
+                        // Actualizar tabla con todos los contactos
                         TableUtils.fillContactsTable(contactList.getjTableList(), contactModel.getAllContacts());
-                        UIUtils.showInfo("Importación de registros realizada correctamente");
+                        // Construir mensaje de resultado
+                        StringBuilder message = new StringBuilder("Importación completada.");
+                        // Si hubo duplicados, agregarlos al mensaje
+                        if (result.getDuplicateCount() > 0) {
+                            message.append(" Duplicados omitidos: ").append(result.getDuplicateCount()).append(".");
+                        }
+                        UIUtils.showInfo(message.toString());
+                    } catch (InterruptedException ex) {
+                        // Manejo de errores durante la importación
+                        Thread.currentThread().interrupt();
+                    } catch (ExecutionException ex) {
+                        // Mostrar errores durante la importación
+                        UIUtils.showError(ex.getCause() != null ? ex.getCause().getMessage() : "Error al importar contactos");
                     }
-                }.execute();
+                }
+            }.execute();
         }
     }
 

@@ -3,6 +3,8 @@ package model;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import thread.ContactValidationThread;
+import utils.ImportResult;
 
 public class ContactModel {
 
@@ -98,19 +100,49 @@ public class ContactModel {
     }
 
     /**
-     * Importa contactos desde un archivo CSV.
+     * Importa contactos desde un archivo CSV validando duplicados mediante hilos.
      *
      * @param file Archivo CSV a importar.
+     * @return Resultado de la importación.
      * @throws RuntimeException si ocurre un error de lectura o formato.
      */
-    public void importFromCsv(File file) {
+    public ImportResult importFromCsv(File file) {
+        int imported = 0;
+        int duplicates = 0;
+
         try {
             // Importar contactos desde el archivo CSV
             List<Contact> importedContacts = contactRepository.importContacts(file);
-            // Agregar los contactos importados a la lista actual
-            contactList.addAll(importedContacts);
-            // Guardar cambios en el repositorio
-            contactRepository.saveContacts(contactList);
+            for (Contact contact : importedContacts) {
+                // Validar duplicados usando hilo
+                ContactValidationThread validationThread = new ContactValidationThread(this, contact);
+                // Iniciar la validación
+                validationThread.start();
+                // Esperar a que termine la validación
+                try {
+                    validationThread.join();
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException("Validación interrumpida durante la importación", ex);
+                }
+
+                // Verificar si es un duplicado
+                if (validationThread.isDuplicate()) {
+                    duplicates++;
+                    continue;
+                }
+
+                // Agregar contacto si no es duplicado
+                contactList.add(contact);
+                imported++;
+            }
+
+            if (imported > 0) {
+                // Guardar cambios en el repositorio solo si hubo nuevos contactos
+                contactRepository.saveContacts(contactList);
+            }
+
+            return new ImportResult(imported, duplicates);
         } catch (IOException ex) {
             // Lanzar excepción en caso de error
             throw new RuntimeException("Error al importar contactos: " + ex.getMessage(), ex);
