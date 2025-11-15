@@ -1,4 +1,4 @@
-package controller;
+﻿package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import view.ContactList;
 import model.ContactModel;
+import notifications.NotificationHandler;
 import model.Contact;
 import utils.TableUtils;
 import utils.UIUtils;
@@ -27,7 +28,7 @@ public class ContactListController implements ActionListener, KeyListener, Mouse
     private ContactList contactList;
     private ContactViewController contactViewController;
     private ContactModel contactModel;
-
+    private NotificationHandler notificationHandler;
     private Timer searchTimer;
     private int SEARCH_DELAY = 400;
 
@@ -39,10 +40,11 @@ public class ContactListController implements ActionListener, KeyListener, Mouse
      * @param contactModel Modelo de datos de contactos
      */
     public ContactListController(ContactList contactList, ContactViewController contactViewController,
-            ContactModel contactModel) {
+            ContactModel contactModel, NotificationHandler notificationHandler) {
         this.contactList = contactList;
         this.contactViewController = contactViewController;
         this.contactModel = contactModel;
+        this.notificationHandler = notificationHandler;
 
         // Timer para retrasar la búsqueda mientras el usuario escribe
         searchTimer = new Timer(SEARCH_DELAY, _ -> filterData());
@@ -209,6 +211,7 @@ public class ContactListController implements ActionListener, KeyListener, Mouse
             if (confirm == JOptionPane.YES_OPTION) {
                 contactModel.deleteContact(id);
                 TableUtils.fillContactsTable(contactList.getjTableList(), contactModel.getAllContacts());
+                UIUtils.notifyInfo("Contacto eliminado correctamente", notificationHandler);
             }
         }
     }
@@ -300,19 +303,18 @@ public class ContactListController implements ActionListener, KeyListener, Mouse
                         ImportResult result = get();
                         // Actualizar tabla con todos los contactos
                         TableUtils.fillContactsTable(contactList.getjTableList(), contactModel.getAllContacts());
-                        // Construir mensaje de resultado
-                        StringBuilder message = new StringBuilder("Importación completada.");
-                        // Si hubo duplicados, agregarlos al mensaje
+                        StringBuilder message = new StringBuilder("Importación realizada correctamente. Nuevos registros: ")
+                                .append(result.getImportedCount());
                         if (result.getDuplicateCount() > 0) {
-                            message.append(" Duplicados omitidos: ").append(result.getDuplicateCount()).append(".");
+                            message.append(". Duplicados omitidos: ").append(result.getDuplicateCount());
                         }
-                        UIUtils.showInfo(message.toString());
+                        UIUtils.notifyInfo(message.toString(), notificationHandler);
                     } catch (InterruptedException ex) {
                         // Manejo de errores durante la importación
                         Thread.currentThread().interrupt();
                     } catch (ExecutionException ex) {
                         // Mostrar errores durante la importación
-                        UIUtils.showError(ex.getCause() != null ? ex.getCause().getMessage() : "Error al importar contactos");
+                        UIUtils.notifyError(ex.getCause() != null ? ex.getCause().getMessage() : "Error al importar contactos", notificationHandler);
                     }
                 }
             }.execute();
@@ -342,7 +344,7 @@ public class ContactListController implements ActionListener, KeyListener, Mouse
                         Thread.sleep(500);
                         contactModel.exportToCsv(file);
                     } catch (Exception e) {
-                        UIUtils.showError("Error al exportar contactos: " + e.getMessage());
+                        UIUtils.notifyError("Error al exportar contactos: " + e.getMessage(), notificationHandler);
                     }
                     return null;
                 }
@@ -351,7 +353,7 @@ public class ContactListController implements ActionListener, KeyListener, Mouse
                 protected void done() {
                     contactList.getjProgressBar().setIndeterminate(false);
                     contactList.getjProgressBar().setVisible(false);
-                    UIUtils.showInfo("Exportación de registros realizada correctamente");
+                    UIUtils.notifyInfo("Exportación realizada correctamente", notificationHandler);
                 }
             }.execute();
         }

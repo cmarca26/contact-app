@@ -1,4 +1,4 @@
-package controller;
+﻿package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +14,7 @@ import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import model.ContactModel;
+import notifications.NotificationHandler;
 import model.Contact;
 import utils.UIUtils;
 import thread.ContactValidationThread;
@@ -25,6 +26,7 @@ public class ContactFormController implements ActionListener, MouseListener {
     private ContactViewController contactViewController;
     private ContactModel contactModel;
     private String idContact;
+    private NotificationHandler notificationHandler;
 
     /**
      * Constructor para el formulario de contacto.
@@ -35,11 +37,12 @@ public class ContactFormController implements ActionListener, MouseListener {
      * @param idContact ID del contacto a editar (null si es nuevo)
      */
     public ContactFormController(ContactForm contactForm, ContactViewController contactViewController,
-            ContactModel contactModel, String idContact) {
+            ContactModel contactModel, String idContact, NotificationHandler notificationHandler) {
         this.contactForm = contactForm;
         this.contactViewController = contactViewController;
         this.contactModel = contactModel;
         this.idContact = idContact;
+        this.notificationHandler = notificationHandler;
 
         // Configurar listeners
         this.contactForm.getjButtonBack().addActionListener(this);
@@ -196,7 +199,7 @@ public class ContactFormController implements ActionListener, MouseListener {
 
         // Si hay error, mostrar mensaje y salir
         if (error != null) {
-            UIUtils.showError(error);
+            UIUtils.notifyError(error, notificationHandler);
             return;
         }
 
@@ -230,13 +233,13 @@ public class ContactFormController implements ActionListener, MouseListener {
         try {
             validationThread.join(); 
         } catch (InterruptedException ex) {
-            UIUtils.showError("Error en la validación de duplicados");
+            UIUtils.notifyError("Error en la validación de duplicados", notificationHandler);
             return;
         }
 
         // Verificar si se encontró un duplicado
         if (validationThread.isDuplicate()) {
-            UIUtils.showError("El contacto ya está registrado");
+            UIUtils.notifyError("El contacto ya está registrado", notificationHandler);
             return;
         }
 
@@ -255,8 +258,8 @@ public class ContactFormController implements ActionListener, MouseListener {
         // Limpiar campos del formulario
         cleanFields();
 
-        // Mostrar mensaje de éxito
-        UIUtils.showInfo(message);
+        // Mostrar notificación no bloqueante
+        UIUtils.notifyInfo(message, notificationHandler);
 
         // Regresar a la vista de lista de contactos
         contactViewController.showContactList();
@@ -273,7 +276,7 @@ public class ContactFormController implements ActionListener, MouseListener {
         Contact contact = contactModel.findById(idContact);
 
         if (contact == null) {
-            UIUtils.showError("No se encontró el contacto con ID: " + idContact);
+            UIUtils.notifyError("No se encontró el contacto con ID: " + idContact, notificationHandler);
             return;
         }
 
@@ -288,6 +291,5 @@ public class ContactFormController implements ActionListener, MouseListener {
 
         // Llenar campos del formulario con los datos del contacto encontrado
         UIUtils.fillFormData(contactForm.getjPanelFields(), data);
-
     }
 }

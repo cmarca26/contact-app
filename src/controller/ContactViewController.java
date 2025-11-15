@@ -12,6 +12,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import model.ContactModel;
+import notifications.NotificationHandler;
 import utils.I18nUtils;
 import utils.TableUtils;
 import utils.UIUtils;
@@ -23,10 +24,9 @@ public class ContactViewController {
     private ContactStatsController contactStatsController;
 
     private ContactList contactList;
-    private ContactListController contactListController;
-
     private ContactForm contactForm;
     private ContactFormController contactFormController;
+    private NotificationHandler notificationHandler;
 
     /**
      * Constructor para la vista principal de contactos.
@@ -37,6 +37,7 @@ public class ContactViewController {
     public ContactViewController(ContactView contactView, ContactModel contactModel) {
         this.contactView = contactView;
         this.contactModel = contactModel;
+        this.notificationHandler = NotificationHandler.init(contactView);
 
         // Inicialmente, mostrar la lista de contactos y las estadísticas
         showContactList();
@@ -98,7 +99,7 @@ public class ContactViewController {
         // Reutilizar instancia si ya existe
         if (contactList == null) {
             contactList = new ContactList();
-            contactListController = new ContactListController(contactList, this, contactModel);
+            new ContactListController(contactList, this, contactModel, notificationHandler);
         }
         
         TableUtils.fillContactsTable(contactList.getjTableList(), contactModel.getAllContacts());
@@ -112,7 +113,7 @@ public class ContactViewController {
         // Reutilizar instancia si ya existe
         if (contactForm == null) {
             contactForm = new ContactForm();
-            contactFormController = new ContactFormController(contactForm, this, contactModel, id);
+            contactFormController = new ContactFormController(contactForm, this, contactModel, id, notificationHandler);
         } else {
             contactFormController.setIdContact(id);
         }

@@ -11,6 +11,7 @@ import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import notifications.NotificationHandler;
 
 public class UIUtils {
 
@@ -146,5 +147,41 @@ public class UIUtils {
      */
     public static void setButtonVisible(JButton button, boolean status) {
         button.setVisible(status);
+    }
+
+    /**
+     * Notifica un mensaje de información usando el manejador de notificaciones si
+     * está disponible, o un cuadro de diálogo en caso contrario.
+     * 
+     * @param message Mensaje a notificar
+     * @param notificationHandler Manejador de notificaciones (puede ser null)
+     */
+    public static void notifyInfo(String message, NotificationHandler notificationHandler) {
+        if (message == null || message.isBlank()) {
+            return;
+        }
+        if (notificationHandler != null) {
+            notificationHandler.post(message);
+        } else {
+            showInfo(message);
+        }
+    }
+
+    /**
+     * Notifica un mensaje de error usando el manejador de notificaciones si
+     * está disponible, o un cuadro de diálogo en caso contrario.
+     * 
+     * @param message  Mensaje a notificar
+     * @param notificationHandler Manejador de notificaciones (puede ser null)
+     */
+    public static void notifyError(String message, NotificationHandler notificationHandler) {
+        if (message == null || message.isBlank()) {
+            return;
+        }
+        if (notificationHandler != null) {
+            notificationHandler.postError(message);
+        } else {
+            showError(message);
+        }
     }
 }
