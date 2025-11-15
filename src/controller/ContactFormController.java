@@ -16,6 +16,7 @@ import javax.swing.SwingUtilities;
 import model.ContactModel;
 import model.Contact;
 import utils.UIUtils;
+import thread.ContactValidationThread;
 import view.ContactForm;
 
 public class ContactFormController implements ActionListener, MouseListener {
@@ -210,6 +211,34 @@ public class ContactFormController implements ActionListener, MouseListener {
                 (String) formData.get("email"),
                 (String) formData.get("categoria"),
                 (Boolean) formData.get("jCheckBoxFavorite"));
+
+        // Validación en segundo plano para evitar duplicados
+        ContactValidationThread validationThread;
+
+        if (idContact == null) {
+            // Nuevo contacto: validar todos
+            validationThread = new ContactValidationThread(contactModel, c);
+        } else {
+            // Edición: ignorar el propio id
+            validationThread = new ContactValidationThread(contactModel, c, idContact);
+        }
+
+        // Iniciar la validación
+        validationThread.start();
+
+        // Esperar a que termine la validación
+        try {
+            validationThread.join(); 
+        } catch (InterruptedException ex) {
+            UIUtils.showError("Error en la validación de duplicados");
+            return;
+        }
+
+        // Verificar si se encontró un duplicado
+        if (validationThread.isDuplicate()) {
+            UIUtils.showError("El contacto ya está registrado (por email o nombre y apellido)");
+            return;
+        }
 
         String message = null;
         if (idContact == null) {
