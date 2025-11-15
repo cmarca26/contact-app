@@ -236,7 +236,7 @@ public class ContactFormController implements ActionListener, MouseListener {
 
         // Verificar si se encontró un duplicado
         if (validationThread.isDuplicate()) {
-            UIUtils.showError("El contacto ya está registrado (por email o nombre y apellido)");
+            UIUtils.showError("El contacto ya está registrado");
             return;
         }
 
