@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
@@ -27,6 +28,7 @@ public class ContactFormController implements ActionListener, MouseListener {
     private ContactModel contactModel;
     private String idContact;
     private NotificationHandler notificationHandler;
+    private final String lockToken = UUID.randomUUID().toString();
 
     /**
      * Constructor para el formulario de contacto.
@@ -37,22 +39,16 @@ public class ContactFormController implements ActionListener, MouseListener {
      * @param idContact ID del contacto a editar (null si es nuevo)
      */
     public ContactFormController(ContactForm contactForm, ContactViewController contactViewController,
-            ContactModel contactModel, String idContact, NotificationHandler notificationHandler) {
+            ContactModel contactModel, NotificationHandler notificationHandler) {
         this.contactForm = contactForm;
         this.contactViewController = contactViewController;
         this.contactModel = contactModel;
-        this.idContact = idContact;
         this.notificationHandler = notificationHandler;
 
         // Configurar listeners
         this.contactForm.getjButtonBack().addActionListener(this);
         this.contactForm.getjButtonClean().addActionListener(this);
         this.contactForm.getjButtonSave().addActionListener(this);
-
-        // Si se proporciona un ID, cargar datos para edición
-        if (idContact != null) {
-            fillData(idContact);
-        }
 
         // Inicializar atajos de teclado y de mouse
         SwingUtilities.invokeLater(this::initKeyBindings);
@@ -62,13 +58,42 @@ public class ContactFormController implements ActionListener, MouseListener {
         return idContact;
     }
 
-    public void setIdContact(String idContact) {
-        this.idContact = idContact;
+    /**
+     * Establece el ID del contacto a editar, adquiriendo el bloqueo
+     * correspondiente.
+     * 
+     * @param idContact ID del contacto a editar (null si es nuevo)
+     * @return
+     */
+    public boolean setIdContact(String idContact) {
 
-        if (idContact != null) {
-            fillData(idContact);
-        } else {
+        // Si es un nuevo contacto, limpiar campos y devolver true
+        if (idContact == null) {
             cleanFields();
+            return true;
+        }
+
+        // Intentar adquirir el bloqueo para el contacto a editar
+        boolean acquired = contactModel.acquireContactLock(idContact, lockToken);
+        // Si no se pudo adquirir, mostrar error y devolver false
+        if (!acquired) {
+            UIUtils.notifyError("El contacto seleccionado se esta editando por otro usuario", notificationHandler);
+            return false;
+        }
+
+        // Establecer el ID del contacto y llenar los datos en el formulario y devolver true
+        this.idContact = idContact;
+        fillData(idContact);
+        return true;
+    }
+
+    /**
+     * Libera el bloqueo del contacto actualmente editado, si existe.
+     */
+    private void releaseCurrentLock() {
+        if (this.idContact != null) {
+            contactModel.releaseContactLock(this.idContact, lockToken);
+            this.idContact = null;
         }
     }
 
@@ -178,6 +203,8 @@ public class ContactFormController implements ActionListener, MouseListener {
      * formulario.
      */
     private void backView() {
+        // Liberar el bloqueo del contacto editado
+        releaseCurrentLock();
         cleanFields();
         contactViewController.showContactList();
     }
@@ -231,7 +258,7 @@ public class ContactFormController implements ActionListener, MouseListener {
 
         // Esperar a que termine la validación
         try {
-            validationThread.join(); 
+            validationThread.join();
         } catch (InterruptedException ex) {
             UIUtils.notifyError("Error en la validación de duplicados", notificationHandler);
             return;
@@ -255,6 +282,9 @@ public class ContactFormController implements ActionListener, MouseListener {
             message = "Contacto actualizado correctamente";
         }
 
+        // Liberar el bloqueo del contacto editado
+        releaseCurrentLock();
+
         // Limpiar campos del formulario
         cleanFields();
 
@@ -277,6 +307,9 @@ public class ContactFormController implements ActionListener, MouseListener {
 
         if (contact == null) {
             UIUtils.notifyError("No se encontró el contacto con ID: " + idContact, notificationHandler);
+            // Liberar el bloqueo si no se encontró el contacto
+            releaseCurrentLock();
+
             return;
         }
 

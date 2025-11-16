@@ -2,14 +2,18 @@ package model;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import thread.ContactValidationThread;
 import utils.ImportResult;
 
 public class ContactModel {
 
+    private final ContactRepository contactRepository;
+    private final Object contactListLock = new Object();
+    private final ContactLockManager lockManager = new ContactLockManager();
     private List<Contact> contactList;
-    private ContactRepository contactRepository;
 
     public ContactModel() {
         contactRepository = new ContactRepository();
@@ -19,10 +23,12 @@ public class ContactModel {
     /**
      * Obtiene todos los contactos.
      *
-     * @return Lista de contactos.
+     * @return Lista inmutable de contactos.
      */
     public List<Contact> getAllContacts() {
-        return contactList;
+        synchronized (contactListLock) {
+            return Collections.unmodifiableList(new ArrayList<>(contactList));
+        }
     }
 
     /**
@@ -31,10 +37,12 @@ public class ContactModel {
      * @param c Contacto a agregar.
      */
     public void addContact(Contact c) {
-        // Agregar contacto a la lista
-        contactList.add(c);
-        // Guardar cambios en el repositorio
-        contactRepository.saveContacts(contactList);
+        synchronized (contactListLock) {
+            // Agregar contacto a la lista
+            contactList.add(c);
+            // Guardar cambios en el repositorio
+            contactRepository.saveContacts(contactList);
+        }
     }
 
     /**
@@ -49,13 +57,14 @@ public class ContactModel {
             return null;
         }
 
-        // Buscar el contacto en la lista
-        for (Contact c : getAllContacts()) {
-            if (c.getId().equals(id)) {
-                return c;
+        synchronized (contactListLock) {
+            // Buscar el contacto en la lista
+            for (Contact c : contactList) {
+                if (c.getId().equals(id)) {
+                    return c;
+                }
             }
         }
-
         return null;
     }
 
@@ -70,10 +79,12 @@ public class ContactModel {
             return;
         }
 
-        // Eliminar el contacto de la lista
-        contactList.removeIf(c -> c.getId().equals(id));
-        // Guardar cambios en el repositorio
-        contactRepository.saveContacts(contactList);
+        synchronized (contactListLock) {
+            // Eliminar el contacto de la lista
+            contactList.removeIf(c -> c.getId().equals(id));
+            // Guardar cambios en el repositorio
+            contactRepository.saveContacts(contactList);
+        }
     }
 
     /**
@@ -87,16 +98,17 @@ public class ContactModel {
             return;
         }
 
-        // Buscar el contacto en la lista y actualizarlo
-        for (int i = 0; i < contactList.size(); i++) {
-            if (contactList.get(i).getId().equals(updated.getId())) {
-                contactList.set(i, updated);
-                break;
+        synchronized (contactListLock) {
+            // Buscar el contacto en la lista y actualizarlo
+            for (int i = 0; i < contactList.size(); i++) {
+                if (contactList.get(i).getId().equals(updated.getId())) {
+                    contactList.set(i, updated);
+                    break;
+                }
             }
+            // Guardar cambios en el repositorio
+            contactRepository.saveContacts(contactList);
         }
-
-        // Guardar cambios en el repositorio
-        contactRepository.saveContacts(contactList);
     }
 
     /**
@@ -109,6 +121,7 @@ public class ContactModel {
     public ImportResult importFromCsv(File file) {
         int imported = 0;
         int duplicates = 0;
+        List<Contact> pendingContacts = new ArrayList<>();
 
         try {
             // Importar contactos desde el archivo CSV
@@ -133,18 +146,22 @@ public class ContactModel {
                 }
 
                 // Agregar contacto si no es duplicado
-                contactList.add(contact);
+                pendingContacts.add(contact);
                 imported++;
             }
 
-            if (imported > 0) {
-                // Guardar cambios en el repositorio solo si hubo nuevos contactos
-                contactRepository.saveContacts(contactList);
+            if (!pendingContacts.isEmpty()) {
+                synchronized (contactListLock) {
+                    // Agregar contactos pendientes a la lista
+                    contactList.addAll(pendingContacts);
+                    // Guardar cambios en el repositorio
+                    contactRepository.saveContacts(contactList);
+                }
             }
 
             return new ImportResult(imported, duplicates);
         } catch (IOException ex) {
-            // Lanzar excepción en caso de error
+            // Lanzar excepción en caso de error de lectura
             throw new RuntimeException("Error al importar contactos: " + ex.getMessage(), ex);
         }
     }
@@ -158,10 +175,46 @@ public class ContactModel {
     public void exportToCsv(File file) {
         try {
             // Exportar contactos al archivo CSV
-            contactRepository.exportContacts(file, contactList);
+            List<Contact> snapshot;
+            synchronized (contactListLock) {
+                snapshot = new ArrayList<>(contactList);
+            }
+            contactRepository.exportContacts(file, snapshot);
         } catch (IOException ex) {
             // Lanzar excepción en caso de error
             throw new RuntimeException("Error al exportar contactos: " + ex.getMessage(), ex);
         }
     }
+
+    /**
+     * Intenta bloquear un contacto para edición.
+     *
+     * @param contactId ID del contacto.
+     * @param ownerToken Token del propietario del bloqueo.
+     * @return true si el bloqueo se obtuvo, false si ya esta tomado.
+     */
+    public boolean acquireContactLock(String contactId, String ownerToken) {
+        return lockManager.tryLock(contactId, ownerToken);
+    }
+
+    /**
+     * Libera el bloqueo de edición del contacto dado.
+     *
+     * @param contactId ID del contacto.
+     * @param ownerToken Token del propietario.
+     */
+    public void releaseContactLock(String contactId, String ownerToken) {
+        lockManager.unlock(contactId, ownerToken);
+    }
+
+    /**
+     * Indica si el contacto esta bloqueado por cualquier usuario.
+     *
+     * @param contactId ID del contacto.
+     * @return true si esta bloqueado, false en caso contrario.
+     */
+    public boolean isContactLocked(String contactId) {
+        return lockManager.isLocked(contactId);
+    }
 }
+

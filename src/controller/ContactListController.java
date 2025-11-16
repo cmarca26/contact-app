@@ -205,6 +205,11 @@ public class ContactListController implements ActionListener, KeyListener, Mouse
 
         // Si el ID no es nulo, mostrar cuadro de confirmación y eliminar el registro
         if (id != null) {
+            // Verificar si el contacto está bloqueado
+            if (contactModel.isContactLocked(id)) {
+                UIUtils.notifyError("El contacto se encuentra en edición por otro usuario", notificationHandler);
+                return;
+            }
             int confirm = UIUtils.showConfirm("¿Desea eliminar este registro?");
 
             // Si el usuario confirma, eliminar el contacto y actualizar la tabla

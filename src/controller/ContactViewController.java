@@ -113,9 +113,11 @@ public class ContactViewController {
         // Reutilizar instancia si ya existe
         if (contactForm == null) {
             contactForm = new ContactForm();
-            contactFormController = new ContactFormController(contactForm, this, contactModel, id, notificationHandler);
-        } else {
-            contactFormController.setIdContact(id);
+            contactFormController = new ContactFormController(contactForm, this, contactModel, notificationHandler);
+        }
+
+        if (!contactFormController.setIdContact(id)) {
+            return;
         }
 
         UIUtils.showPanel(contactView.getjPanelContacts(), contactForm);
