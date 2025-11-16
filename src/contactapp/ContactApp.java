@@ -11,6 +11,7 @@ public class ContactApp {
         // Inicializar Modelo y Vista
         ContactModel contactModel = new ContactModel();
         ContactView contactView = new ContactView();
+        utils.I18nUtils.setLanguage("es");
 
         // Inicializar Constructor de la vista
         new ContactViewController(contactView, contactModel);
